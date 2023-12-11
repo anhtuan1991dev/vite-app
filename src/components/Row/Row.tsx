@@ -6,8 +6,8 @@ type Props = {
 
 function Row(props: Props) {
   return (
-    <div className='flex flex-wrap flex-col w-full'>
-      <div className='flex flex-shrink'>{props.children}</div>
+    <div className='flex flex-col w-full'>
+      <div className='flex flex-wrap flex-shrink'>{props.children}</div>
     </div>
   )
 }
