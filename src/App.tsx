@@ -4,13 +4,13 @@ import { routes } from './routes'
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<MainLayout />}>
-          {routes}
-        </Route>
-      </Routes>
-    </BrowserRouter>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<MainLayout />}>
+            {routes}
+          </Route>
+        </Routes>
+      </BrowserRouter>
   )
 }
 

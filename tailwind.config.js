@@ -18,10 +18,24 @@ export default {
       'gray-light': '#d3dce6',
       'gray-sidebar': '#1c273c',
       'content': '#fdfdfd',
-      'arrow': '#cdd4e0'
+      'arrow': '#cdd4e0',
     },
     fontFamily: {
-      'sans': ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'],
+      display: [
+        "Inter",
+        "-apple-system",
+        "BlinkMacSystemFont",
+        '"Segoe UI"',
+        "Roboto",
+        '"Helvetica Neue"',
+        "Arial",
+        '"Noto Sans"',
+        "sans-serif",
+        '"Apple Color Emoji"',
+        '"Segoe UI Emoji"',
+        '"Segoe UI Symbol"',
+        '"Noto Color Emoji"',
+      ],
     },
     extend: {
       fontSize: {
@@ -58,6 +72,7 @@ export default {
   },
   plugins: [
     require('flowbite/plugin'),
+    require('@tailwindcss/forms'),
   ]
 }
 

@@ -6,7 +6,7 @@ type Props = {
 
 function Content(props: Props) {
   return (
-    <div className='p-5 w-full flex flex-grow '>
+    <div className='p-5 w-full flex flex-grow bg-gray-50'>
       <>{props.children}</>
     </div>
   )
