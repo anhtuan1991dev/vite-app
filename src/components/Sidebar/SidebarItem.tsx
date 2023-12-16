@@ -5,10 +5,11 @@ import { RouteType } from '~/routes/config'
 import SvgArrow from './SvgArrow'
 
 import SidebarItemCollapse from './SidebarItemCollapse'
+import { useSelector } from 'react-redux'
+import { RootState } from '~/redux/store'
 
 type Props = {
   item: RouteType
-  isOpen: boolean
 }
 
 type SvgArrowType = {
@@ -21,7 +22,8 @@ export const SvgArrowContext = createContext<SvgArrowType>({
   setUpDown: () => {}
 })
 
-function SidebarItemDev({ item, isOpen }: Props) {
+function SidebarItemDev({ item }: Props) {
+  const { showSidebar } = useSelector((state: RootState) => state.sidebar)
   const [upDown, setUpDown] = useState(false)
 
   const liCss = clsx(
@@ -31,24 +33,24 @@ function SidebarItemDev({ item, isOpen }: Props) {
 
   const aCss = clsx(
     'flex flex-grow flex-row flex-nowrap',
-    isOpen ? 'items-center' : 'justify-center items-center',
+    showSidebar ? 'items-center' : 'justify-center items-center',
     'h-10 duration-300'
   )
 
   const spanCss = clsx(
-    isOpen ? 'ml-2.5 hover:text-blue-600' : 'hidden',
+    showSidebar ? 'ml-2.5 hover:text-blue-600' : 'hidden',
     'font-medium text-sm text-gray-sidebar cursor-pointer'
   )
 
   return item.sidebarProps && item.path ? (
-    <li className={`relative ${isOpen && item.sidebarProps.displayText !== 'Dashboard' ? liCss : ''}`}>
+    <li className={`relative ${showSidebar && item.sidebarProps.displayText !== 'Dashboard' ? liCss : ''}`}>
       <SvgArrowContext.Provider value={{ upDown, setUpDown }}>
         <Link to={item.path} className={aCss}>
           {item.sidebarProps.icon}
           <span className={spanCss}>{item.sidebarProps.displayText}</span>
-          {item.child && isOpen ? <SvgArrow /> : null}
+          {item.child && showSidebar ? <SvgArrow /> : null}
         </Link>
-        {isOpen ? item.child ? <SidebarItemCollapse upDown={upDown} item={item.child} /> : null : <></>}
+        {showSidebar ? item.child ? <SidebarItemCollapse upDown={upDown} item={item.child} /> : null : <></>}
       </SvgArrowContext.Provider>
     </li>
   ) : null

@@ -1,4 +1,3 @@
-import { useState, createContext } from 'react'
 import { Outlet } from 'react-router-dom'
 
 import PageLayout from '../PageLayout'
@@ -11,39 +10,20 @@ import HeaderLogo from '~/components/HeaderLogo'
 import HeaderNavbar from '~/components/HeaderNavbar'
 import Topbar from '~/components/Topbar'
 
-import { useMediaQuery } from 'react-responsive'
-
-type OpenContextType = {
-  isOpen: true | false
-  setIsOpen: (isOpen: boolean) => void
-}
-
-export const IsOpenContext = createContext<OpenContextType>({
-  isOpen: true,
-  setIsOpen: () => {}
-})
-
 function MainLayout() {
-  const isSm = useMediaQuery({
-    query: '(max-width: 640px)'
-  })
-
-  const [isOpen, setIsOpen] = useState(!isSm)
   return (
     <PageLayout>
-      <IsOpenContext.Provider value={{ isOpen, setIsOpen }}>
-        <Header>
-          <HeaderLogo isOpen={isOpen} />
-          <HeaderNavbar />
-        </Header>
-        <MainBody>
-          <Topbar isOpen={isOpen} />
-          <MainPanel isOpen={isOpen}>
-            <Outlet />
-            <Footer />
-          </MainPanel>
-        </MainBody>
-      </IsOpenContext.Provider>
+      <Header>
+        <HeaderLogo />
+        <HeaderNavbar />
+      </Header>
+      <MainBody>
+        <Topbar />
+        <MainPanel>
+          <Outlet />
+          <Footer />
+        </MainPanel>
+      </MainBody>
     </PageLayout>
   )
 }

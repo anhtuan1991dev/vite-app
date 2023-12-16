@@ -1,19 +1,20 @@
-import { useContext } from 'react'
-import { IsOpenContext } from '~/layout/MainLayout/MainLayout'
-import { IconMenu2, IconMail, IconBell } from '@tabler/icons-react'
 import AvatarDropdown from '../AvatarDropdown'
 import SearchBar from '../SearchBar'
+import { IconMenu2, IconMail, IconBell } from '@tabler/icons-react'
+import { useSelector, useDispatch } from 'react-redux'
+import { RootState } from '~/redux/store'
+import { toggleSideBar } from '~/redux/slices/sidebarSlice'
 
 function HeaderNavbar() {
-  const { isOpen, setIsOpen } = useContext(IsOpenContext)
+  const dispatch = useDispatch()
+  const { showSidebar } = useSelector((state: RootState) => state.sidebar)
 
   const handleChange = () => {
-    const newValue = !isOpen
-    setIsOpen(newValue)
+    dispatch(toggleSideBar(!showSidebar))
   }
 
   return (
-    <div className={`flex flex-grow justify-between items-center px-5`}>
+    <div className='flex flex-grow justify-between items-center px-5'>
       <button onClick={handleChange}>
         <IconMenu2 size={24} />
       </button>

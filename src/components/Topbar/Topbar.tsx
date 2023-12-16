@@ -1,15 +1,12 @@
 import appRoutes from '~/routes/appRoutes'
 import { Sidebar, SidebarItem } from '../Sidebar'
 
-interface Props {
-  isOpen: boolean
-}
 
-function Topbar({ isOpen }: Props) {
+function Topbar() {
   return (
-    <Sidebar isOpen={isOpen}>
+    <Sidebar>
       {appRoutes.map((route, index) =>
-        route.sidebarProps ? <SidebarItem isOpen={isOpen} item={route} key={index} /> : null
+        route.sidebarProps ? <SidebarItem item={route} key={index} /> : null
       )}
     </Sidebar>
   )
