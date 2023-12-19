@@ -2,12 +2,12 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input, Label, Button, FormGroup } from '~/components/Forms'
-import * as yup from 'yup'
-import Row from '~/components/Row'
 import { Table, TableSearch } from '~/components/Table'
 import { BtnCreate } from './BtnCreate'
-
 import { makeData, Student, studentColumns } from './fetchData'
+
+import * as yup from 'yup'
+import Row from '~/components/Row'
 
 function DashboardPage() {
   const [data, setData] = useState(makeData(1000))

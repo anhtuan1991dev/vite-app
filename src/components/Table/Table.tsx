@@ -8,16 +8,18 @@ import {
 } from '@tanstack/react-table'
 
 import clsx from 'clsx'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, ReactElement } from 'react'
 import { TableCheckbox } from './TableCheckbox'
 import { TableButtonArrow } from './TableButtonArrow'
+import { TableAction } from './TableAction'
 
 interface Props<T extends object> {
   data: T[]
   columns: ColumnDef<T>[]
+  fromEdit?: ReactElement
 }
 
-const Table = <T extends object>({ columns, data }: Props<T>) => {
+const Table = <T extends object>({ columns, data, fromEdit }: Props<T>) => {
   const memoizedColumns = useMemo(() => {
     const updatedColumns = [...columns]
     updatedColumns.unshift({
@@ -76,7 +78,7 @@ const Table = <T extends object>({ columns, data }: Props<T>) => {
             ))}
           </thead>
           <tbody>
-            {table.getRowModel().rows.map((row) => (
+            {table.getRowModel().rows.map((row, idx) => (
               <tr className='border-b dark:border-gray-700' key={row.id}>
                 {row.getVisibleCells().map((cell) => (
                   <td className='p-3' key={cell.id}>
@@ -84,16 +86,8 @@ const Table = <T extends object>({ columns, data }: Props<T>) => {
                   </td>
                 ))}
 
-                <td className='flex justify-center p-3'>
-                  <a
-                    className='font-medium text-blue-600 dark:text-blue-500 hover:underline'
-                    // data-drawer-target='drawer-create-product-default'
-                    // data-drawer-show='drawer-create-product-default'
-                    // aria-controls='drawer-create-product-default'
-                  >
-                    Edit
-                  </a>
-                  <a className='font-medium text-red-600 dark:text-red-500 hover:underline ms-3'>Remove</a>
+                <td className='flex items-center justify-end p-3'>
+                  <TableAction key={idx} fromEdit={fromEdit} original={row.original} />
                 </td>
               </tr>
             ))}

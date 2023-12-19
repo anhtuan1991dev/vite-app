@@ -1,9 +1,10 @@
 import { RouteType } from './config'
 import HomePage from '~/pages/HomePage'
 import DashboardPage from '~/pages/DashboardPage'
+import Customer from '~/pages/Customer'
 import WidgetsPage from '~/pages/WidgetsPage'
 
-import { IconClipboardText } from '@tabler/icons-react'
+import { IconClipboardText, IconUserDollar } from '@tabler/icons-react'
 
 const appRoutes: RouteType[] = [
   {
@@ -17,7 +18,16 @@ const appRoutes: RouteType[] = [
     state: 'dashboard',
     sidebarProps: {
       displayText: 'Dashboard',
-      icon: <IconClipboardText size={20} style={{cursor:'pointer'}}/>
+      icon: <IconClipboardText size={20} style={{ cursor: 'pointer' }} />
+    }
+  },
+  {
+    path: '/customer',
+    element: <Customer />,
+    state: 'customer',
+    sidebarProps: {
+      displayText: 'Customer',
+      icon: <IconUserDollar size={20} style={{ cursor: 'pointer' }} />
     }
   },
   {

@@ -8,15 +8,12 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
   placeholder?: string
   required?: boolean
   readOnly?: boolean
-  radius?: number
 }
 
 const Input = forwardRef<HTMLInputElement, Props>(
-  ({ name, className, placeholder, required, value, readOnly, radius, ...props }, ref) => {
-    const classRadius = radius ? `rounded-[${radius}px]` : ''
+  ({ name, className, placeholder, required, value, readOnly, ...props }, ref) => {
     const classInput = clsx(
-      'bg-gray-50 border border-gray-300 text-gray-700 text-[14px] p-2 leading-5',
-      classRadius,
+      'bg-gray-50 border border-gray-300 text-gray-700 text-[14px] p-2 leading-5 rounded-lg ',
       'focus:ring-blue-500 focus:border-blue-500 block w-full',
       'dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
     )
@@ -37,9 +34,5 @@ const Input = forwardRef<HTMLInputElement, Props>(
     )
   }
 )
-
-Input.defaultProps = {
-  radius: 0
-}
 
 export default Input

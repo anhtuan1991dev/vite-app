@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { rootReducer } from './slices';
-import reduxLogger from 'redux-logger';
+// import reduxLogger from 'redux-logger';
 
 export const store = configureStore({
   reducer: rootReducer,
-  middleware: (gDM) => gDM().concat(reduxLogger)
+  // middleware: (gDM) => gDM().concat(reduxLogger)
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
