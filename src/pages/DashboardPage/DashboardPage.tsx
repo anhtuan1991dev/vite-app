@@ -36,7 +36,7 @@ function DashboardPage() {
         <h2 className='text-2xl'>Default form</h2>
       </div>
 
-      <div className='basis-full p-5 border border-gray-300 hidden'>
+      <div className='basis-full p-5 border border-gray-300'>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormGroup>
             <Label name='First name' />

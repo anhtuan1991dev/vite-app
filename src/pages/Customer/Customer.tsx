@@ -1,20 +1,38 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Table, TableSearch } from '~/components/Table'
-import { Customer, columns } from './customerData'
-import customerService from '~/services/customerService'
 import Row from '~/components/Row'
 import CustomerCreate from './CustomerCreate'
 import CustomerEdit from './CustomerEdit'
+import {
+  Tables,
+  TableHeader,
+  TableHeaderCol,
+  TableBody,
+  TableBodyRow,
+  TableBodyCell,
+  TableBodyAction
+} from '~/components/Tables'
+import { AppDispatch, RootState, useAppDispatch } from '~/redux/store'
+import { useSelector } from 'react-redux'
+import { fetchAll } from '~/redux/slices/customerSlice'
 
 const Customer = () => {
-  const [data, setData] = useState<Customer[]>([])
-  useEffect(() => {
-    customerService.getAll().then((response) => {
-      setData(response.data)
-    })
-  }, [])
+  const dispatch: AppDispatch = useAppDispatch()
+  const customerList = useSelector((state: RootState) => state.customer.entities)
+  const loading = useSelector((state: RootState) => state.customer.loading)
+  const error = useSelector((state: RootState) => state.customer.error)
 
-  if (data.length <= 0) return null
+  useEffect(() => {
+    dispatch(fetchAll())
+  }, [dispatch])
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>
+  }
 
   return (
     <Row>
@@ -30,7 +48,34 @@ const Customer = () => {
           </div>
         </div>
 
-        <Table<Customer> columns={columns} data={data} fromEdit={<CustomerEdit />} />
+        <div className='overflow-x-auto'>
+          <table className='w-full border border-gray-200 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400'></table>
+        </div>
+        <Tables>
+          <TableHeader>
+            <TableHeaderCol name='ID' />
+            <TableHeaderCol name='Name' />
+            <TableHeaderCol name='Email' />
+            <TableHeaderCol name='Phone' />
+            <TableHeaderCol name='Address' />
+            <TableHeaderCol name='Country' />
+            <TableHeaderCol name='' />
+          </TableHeader>
+          <TableBody>
+            {customerList.map((customer) => (
+              <TableBodyRow key={customer.id}>
+                <TableBodyCell name={customer.id} />
+                <TableBodyCell name={customer.name} />
+                <TableBodyCell name={customer.email} />
+                <TableBodyCell name={customer.phone} />
+                <TableBodyCell name={customer.address} />
+                <TableBodyCell name={customer.country} />
+                <TableBodyAction key={customer.id} data={customer}></TableBodyAction>
+              </TableBodyRow>
+            ))}
+          </TableBody>
+        </Tables>
+        <CustomerEdit />
       </div>
     </Row>
   )

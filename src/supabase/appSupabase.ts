@@ -5,7 +5,7 @@ const appSupabase = axios.create({
   baseURL: supabaseConfig.url,
   headers: {
     apikey: supabaseConfig.apikey,
-    Authorization: 'Bearer ' + supabaseConfig.authorization
+    Authorization: 'Bearer ' + supabaseConfig.authorization,
   }
 })
 
