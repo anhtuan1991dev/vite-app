@@ -1,21 +1,21 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { CustomerType } from '~/pages/Customer/CustomerType'
 import customerService from '~/services/customerService'
+import appSupabase from '~/supabase/appSupabase'
 
 export const fetchAll = createAsyncThunk('customer/fetch-all', async () => {
   const response = await customerService.getAll()
-  return response.data
+  return (response.data as CustomerType[]).sort((a, b) => a.id - b.id)
 })
 
-// export const fetchGetId = createAsyncThunk('customer/fetch-id', async (id: number | string) => {
-//   const response = await customerService.getId(id)
-//   return response.data
-// })
-
-export const fetchCreateCustomer = createAsyncThunk('customer/create', async (data: CustomerType) => {
-  console.log(111);
-  
-  const response = await customerService.createCustomer(data)
+export const fetchCreateCustomer = createAsyncThunk('customer/create', async (data: CustomerType, thunkAPI) => {
+  const response = await appSupabase.post('/customer', data, {
+    signal: thunkAPI.signal,
+    headers: {
+      'Content-Type': 'application/json',
+      Prefer: 'return=minimal'
+    }
+  })
   return response
 })
 
@@ -26,6 +26,7 @@ interface CustomersState {
   customer: CustomerType
   loading: boolean
   error: string | null
+  status: number
 }
 
 const initialState: CustomersState = {
@@ -34,7 +35,8 @@ const initialState: CustomersState = {
   entities: [],
   customer: { id: 0, name: '', email: '', phone: '', address: '', country: '' },
   loading: false,
-  error: null
+  error: null,
+  status: 0
 }
 
 const customerSlice = createSlice({
@@ -57,7 +59,7 @@ const customerSlice = createSlice({
         state.loading = true
         state.error = null
       })
-      .addCase(fetchAll.fulfilled, (state, action) => {
+      .addCase(fetchAll.fulfilled, (state, action: PayloadAction<CustomerType[]>) => {
         state.loading = false
         state.entities = action.payload
       })
@@ -69,9 +71,9 @@ const customerSlice = createSlice({
         state.loading = true
         state.error = null
       })
-      .addCase(fetchCreateCustomer.fulfilled, (state, action) => {
+      .addCase(fetchCreateCustomer.fulfilled, (state) => {
         state.loading = false
-        state.entities.push(action.payload.data)
+        state.error = null
       })
       .addCase(fetchCreateCustomer.rejected, (state, action) => {
         state.loading = false

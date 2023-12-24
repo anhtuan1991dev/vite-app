@@ -1,6 +1,6 @@
 import { SvgClose } from '~/components/Svg'
 import { Label, Input, Button, FormGroup } from '~/components/Forms'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { RootState, useAppDispatch } from '~/redux/store'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
@@ -9,17 +9,28 @@ import clsx from 'clsx'
 import { toggleAddTableDrawer } from '~/redux/slices/tableDrawerSlice'
 import { useForm } from 'react-hook-form'
 import ErrorText from '~/components/ErrorText'
-import { fetchCreateCustomer } from '~/redux/slices/customerSlice'
+import { fetchCreateCustomer, fetchAll } from '~/redux/slices/customerSlice'
 import { CustomerType } from './CustomerType'
+import { AxiosResponse } from 'axios'
+import { ToastContainer, toast } from 'react-toastify'
+import { useEffect, useState } from 'react'
+import { error } from 'console'
 
 const CustomerCreate = () => {
+  const [toastSuccess, setToastSuccess] = useState(false)
   const dispatch = useAppDispatch()
   const { showAddTableDrawer } = useSelector((state: RootState) => state.tableDrawer)
-  const loading = useSelector((state: RootState) => state.customer.loading)
-  const error = useSelector((state: RootState) => state.customer.error)
 
   const toggleDrawer = () => {
     dispatch(toggleAddTableDrawer(!showAddTableDrawer))
+  }
+
+  const toggleToast = () => {
+    toast.success('Success Notification !', {
+      position: toast.POSITION.TOP_RIGHT,
+      autoClose: 2000,
+      hideProgressBar: true
+    })
   }
 
   const schema = yup
@@ -40,10 +51,23 @@ const CustomerCreate = () => {
   } = useForm({ resolver: yupResolver(schema) })
 
   const onSubmit = (data: any) => {
-    console.log(data)
-    // console.log(loading);
-    // dispatch(fetchCreateCustomer(data))
-    // console.log(loading);
+    dispatch(fetchCreateCustomer(data))
+      .then((res) => {
+        if ((res.payload as AxiosResponse).status === 201) {
+          dispatch(toggleAddTableDrawer(!showAddTableDrawer))
+          dispatch(fetchAll())
+            .unwrap()
+            .then(() => {
+              toggleToast()
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+        }
+      })
+      .catch((error: any) => {
+        console.log(error)
+      })
   }
 
   return (
@@ -59,7 +83,6 @@ const CustomerCreate = () => {
       >
         Create
       </button>
-
       <Drawer
         open={showAddTableDrawer}
         onClose={toggleDrawer}
@@ -114,6 +137,7 @@ const CustomerCreate = () => {
           </div>
         </form>
       </Drawer>
+      <ToastContainer />
     </>
   )
 }
