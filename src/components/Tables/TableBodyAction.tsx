@@ -3,11 +3,10 @@ import { Dropdown } from 'flowbite-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '~/redux/store'
 import { toggleEditTableDrawer, toggleDeleteTableDrawer } from '~/redux/slices/tableDrawerSlice'
-import { dataCustomer } from '~/redux/slices/customerSlice'
-import { CustomerType } from '~/pages/CustomerPage/CustomerType'
+import { setDataTable } from '~/redux/slices/tableDrawerSlice' 
 import { IconEdit, IconTrash, IconEye } from '@tabler/icons-react'
-interface Props {
-  data: CustomerType
+interface Props { 
+  data: any
 }
 
 const TableBodyAction = ({ data }: Props) => {
@@ -15,12 +14,12 @@ const TableBodyAction = ({ data }: Props) => {
   const { showEditTableDrawer } = useSelector((state: RootState) => state.tableDrawer)
 
   const toggleDrawer = () => {
-    dispatch(dataCustomer(data))
+    dispatch(setDataTable(data))
     dispatch(toggleEditTableDrawer(!showEditTableDrawer))
   }
 
   const toggleDelete = () => {
-    dispatch(dataCustomer(data))
+    dispatch(setDataTable(data))
     dispatch(toggleDeleteTableDrawer(true))
   }
 

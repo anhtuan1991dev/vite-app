@@ -18,7 +18,7 @@ import { useSelector } from 'react-redux'
 import { fetchAll } from '~/redux/slices/customerSlice'
 import CustomerSkeleton from './CustomerSkeleton'
 import clsx from 'clsx'
-
+import CustomerExport from './CustomerExport'
 
 function CustomerPage() {
   const dispatch: AppDispatch = useAppDispatch()
@@ -56,6 +56,9 @@ function CustomerPage() {
                 <div className='w-full md:w-auto flex flex-col md:flex-row md:pl-2'>
                   <CustomerCreate />
                 </div>
+                <div className='w-full md:w-auto flex flex-col md:flex-row md:pl-2'>
+                  <CustomerExport />
+                </div>
               </div>
             </div>
 
@@ -84,7 +87,7 @@ function CustomerPage() {
               </TableBody>
             </Tables>
             <CustomerEdit />
-            <CustomerDelete/>
+            <CustomerDelete />
           </div>
         </>
       )}

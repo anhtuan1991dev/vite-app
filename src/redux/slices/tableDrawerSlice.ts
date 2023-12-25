@@ -6,19 +6,24 @@ interface TableDrawerState {
   showAddTableDrawer: boolean
   showEditTableDrawer: boolean
   showDeleteTableDrawer: boolean
+  dataTable: any
 }
 
 const initialState = {
   showTableDrawer: false,
   showAddTableDrawer: false,
   showEditTableDrawer: false,
-  showDeleteTableDrawer: false
+  showDeleteTableDrawer: false,
+  dataTable: {}
 } as TableDrawerState
 
 const tableDrawerSlice = createSlice({
   name: 'tableDrawer',
   initialState,
   reducers: {
+    setDataTable: (state, action) => {
+      Object.assign(state.dataTable, action.payload)
+    },
     toggleTableDrawer(state, action: PayloadAction<boolean>) {
       state.showTableDrawer = action.payload
     },
@@ -34,6 +39,6 @@ const tableDrawerSlice = createSlice({
   }
 })
 
-export const { toggleTableDrawer, toggleAddTableDrawer, toggleEditTableDrawer, toggleDeleteTableDrawer } =
+export const { setDataTable, toggleTableDrawer, toggleAddTableDrawer, toggleEditTableDrawer, toggleDeleteTableDrawer } =
   tableDrawerSlice.actions
 export default tableDrawerSlice.reducer

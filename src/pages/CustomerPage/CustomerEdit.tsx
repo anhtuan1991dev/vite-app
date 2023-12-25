@@ -12,12 +12,13 @@ import ErrorText from '~/components/ErrorText'
 import * as yup from 'yup'
 import Drawer from 'react-modern-drawer'
 import clsx from 'clsx'
+import { CustomerType } from './CustomerType'
 
 const CustomerEdit = () => {
   const dispatch = useAppDispatch()
-  const { showEditTableDrawer } = useSelector((state: RootState) => state.tableDrawer)
-  const { customer } = useSelector((state: RootState) => state.customer)
-
+  const { showEditTableDrawer, dataTable } = useSelector((state: RootState) => state.tableDrawer)
+  const customer = dataTable as CustomerType
+  
   const toggleDrawer = () => {
     dispatch(toggleEditTableDrawer(!showEditTableDrawer))
   }

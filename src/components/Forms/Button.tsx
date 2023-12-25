@@ -1,11 +1,12 @@
 import clsx from 'clsx'
-import { ButtonHTMLAttributes } from 'react'
+import { ButtonHTMLAttributes, ReactNode } from 'react'
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   name: string
+  children?: ReactNode
 }
 
-const Button = ({ name, ...rest }: Props) => {
+const Button = ({ name, children, ...rest }: Props) => {
   return (
     <button
       className={clsx(
@@ -15,6 +16,7 @@ const Button = ({ name, ...rest }: Props) => {
       )}
       {...rest}
     >
+      {children}
       {name}
     </button>
   )

@@ -5,11 +5,12 @@ import { toast } from 'react-toastify'
 import { fetchAll, fetchDeleteCustomer } from '~/redux/slices/customerSlice'
 import { toggleDeleteTableDrawer } from '~/redux/slices/tableDrawerSlice'
 import { RootState, useAppDispatch } from '~/redux/store'
+import { CustomerType } from './CustomerType'
 
 export default function CustomerDelete() {
   const dispatch = useAppDispatch()
-  const { showDeleteTableDrawer } = useSelector((state: RootState) => state.tableDrawer)
-  const { customer } = useSelector((state: RootState) => state.customer)
+  const { showDeleteTableDrawer, dataTable } = useSelector((state: RootState) => state.tableDrawer)
+  const customer = dataTable as CustomerType
 
   const handleClose = () => {
     dispatch(toggleDeleteTableDrawer(false))
@@ -24,11 +25,9 @@ export default function CustomerDelete() {
   }
 
   const handleDelete = () => {
-    console.log(customer.id)
     dispatch(fetchDeleteCustomer(customer.id))
       .unwrap()
       .then((res) => {
-        console.log(res)
         if (res.status === 204) {
           dispatch(fetchAll())
             .unwrap()
