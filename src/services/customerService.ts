@@ -1,4 +1,4 @@
-import { CustomerType } from '~/pages/Customer/CustomerType'
+import { CustomerType } from '~/pages/CustomerPage/CustomerType'
 import appSupabase from '~/supabase/appSupabase'
 
 class customerService {

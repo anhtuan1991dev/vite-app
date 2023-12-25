@@ -1,7 +1,7 @@
 import { RouteType } from './config'
 import HomePage from '~/pages/HomePage'
 import DashboardPage from '~/pages/DashboardPage'
-import Customer from '~/pages/Customer'
+import Customer from '~/pages/CustomerPage'
 import WidgetsPage from '~/pages/WidgetsPage'
 
 import { IconClipboardText, IconUserDollar } from '@tabler/icons-react'

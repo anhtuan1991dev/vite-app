@@ -1,18 +1,20 @@
 import { useEffect } from 'react'
 import { SvgClose } from '~/components/Svg'
 import { Label, Input, Button, FormGroup } from '~/components/Forms'
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '~/redux/store'
+import { useSelector } from 'react-redux'
+import { RootState, useAppDispatch } from '~/redux/store'
 import { toggleEditTableDrawer } from '~/redux/slices/tableDrawerSlice'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { fetchAll, fetchUpdateCustomer } from '~/redux/slices/customerSlice'
+import { toast } from 'react-toastify'
 import ErrorText from '~/components/ErrorText'
 import * as yup from 'yup'
 import Drawer from 'react-modern-drawer'
 import clsx from 'clsx'
 
 const CustomerEdit = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { showEditTableDrawer } = useSelector((state: RootState) => state.tableDrawer)
   const { customer } = useSelector((state: RootState) => state.customer)
 
@@ -23,6 +25,7 @@ const CustomerEdit = () => {
   const schema = yup
     .object()
     .shape({
+      id: yup.number(),
       name: yup.string().required('Name is required.'),
       email: yup.string(),
       phone: yup.string(),
@@ -40,6 +43,7 @@ const CustomerEdit = () => {
 
   useEffect(() => {
     if (customer) {
+      setValue('id', customer.id)
       setValue('name', customer.name)
       setValue('email', customer.email)
       setValue('phone', customer.phone)
@@ -48,8 +52,33 @@ const CustomerEdit = () => {
     }
   }, [customer])
 
+  const toggleToast = () => {
+    toast.success('Success Notification !', {
+      position: toast.POSITION.TOP_RIGHT,
+      autoClose: 2000,
+      hideProgressBar: true
+    })
+  }
+
   const onSubmit = (data: any) => {
-    console.log(data)
+    dispatch(fetchUpdateCustomer(data))
+      .unwrap()
+      .then((res) => {
+        if (res.status === 204) {
+          dispatch(toggleEditTableDrawer(!showEditTableDrawer))
+          dispatch(fetchAll())
+            .unwrap()
+            .then(() => {
+              toggleToast()
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+        }
+      })
+      .catch((error: any) => {
+        console.log(error)
+      })
   }
 
   return (

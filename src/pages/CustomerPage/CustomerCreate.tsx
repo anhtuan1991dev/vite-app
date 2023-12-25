@@ -3,21 +3,17 @@ import { Label, Input, Button, FormGroup } from '~/components/Forms'
 import { useSelector } from 'react-redux'
 import { RootState, useAppDispatch } from '~/redux/store'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { toggleAddTableDrawer } from '~/redux/slices/tableDrawerSlice'
+import { useForm } from 'react-hook-form'
+import { fetchCreateCustomer, fetchAll } from '~/redux/slices/customerSlice'
+import { AxiosResponse } from 'axios'
+import { ToastContainer, toast } from 'react-toastify'
+import ErrorText from '~/components/ErrorText'
 import * as yup from 'yup'
 import Drawer from 'react-modern-drawer'
 import clsx from 'clsx'
-import { toggleAddTableDrawer } from '~/redux/slices/tableDrawerSlice'
-import { useForm } from 'react-hook-form'
-import ErrorText from '~/components/ErrorText'
-import { fetchCreateCustomer, fetchAll } from '~/redux/slices/customerSlice'
-import { CustomerType } from './CustomerType'
-import { AxiosResponse } from 'axios'
-import { ToastContainer, toast } from 'react-toastify'
-import { useEffect, useState } from 'react'
-import { error } from 'console'
 
 const CustomerCreate = () => {
-  const [toastSuccess, setToastSuccess] = useState(false)
   const dispatch = useAppDispatch()
   const { showAddTableDrawer } = useSelector((state: RootState) => state.tableDrawer)
 
@@ -46,9 +42,19 @@ const CustomerCreate = () => {
 
   const {
     register,
+    reset,
     handleSubmit,
     formState: { errors }
-  } = useForm({ resolver: yupResolver(schema) })
+  } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      name: '',
+      email: '',
+      phone: '',
+      address: '',
+      country: ''
+    }
+  })
 
   const onSubmit = (data: any) => {
     dispatch(fetchCreateCustomer(data))
@@ -58,6 +64,7 @@ const CustomerCreate = () => {
           dispatch(fetchAll())
             .unwrap()
             .then(() => {
+              reset()
               toggleToast()
             })
             .catch((error) => {

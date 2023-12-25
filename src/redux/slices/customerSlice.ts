@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
-import { CustomerType } from '~/pages/Customer/CustomerType'
+import { CustomerType } from '~/pages/CustomerPage/CustomerType'
 import customerService from '~/services/customerService'
 import appSupabase from '~/supabase/appSupabase'
 
@@ -10,6 +10,17 @@ export const fetchAll = createAsyncThunk('customer/fetch-all', async () => {
 
 export const fetchCreateCustomer = createAsyncThunk('customer/create', async (data: CustomerType, thunkAPI) => {
   const response = await appSupabase.post('/customer', data, {
+    signal: thunkAPI.signal,
+    headers: {
+      'Content-Type': 'application/json',
+      Prefer: 'return=minimal'
+    }
+  })
+  return response
+})
+
+export const fetchUpdateCustomer = createAsyncThunk('customer/update', async (data: CustomerType, thunkAPI) => {
+  const response = await appSupabase.patch(`/customer?id=eq.${data.id}`, data, {
     signal: thunkAPI.signal,
     headers: {
       'Content-Type': 'application/json',
@@ -55,6 +66,7 @@ const customerSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // fetchAll
       .addCase(fetchAll.pending, (state) => {
         state.loading = true
         state.error = null
@@ -67,15 +79,21 @@ const customerSlice = createSlice({
         state.loading = false
         state.error = action.error.message || 'Something went wrong'
       })
-      .addCase(fetchCreateCustomer.pending, (state) => {
-        state.loading = true
-        state.error = null
-      })
+      // fetchCreateCustomer
       .addCase(fetchCreateCustomer.fulfilled, (state) => {
         state.loading = false
         state.error = null
       })
       .addCase(fetchCreateCustomer.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.error.message || 'Something went wrong'
+      })
+      // fetchUpdateCustomer
+      .addCase(fetchUpdateCustomer.fulfilled, (state) => {
+        state.loading = false
+        state.error = null
+      })
+      .addCase(fetchUpdateCustomer.rejected, (state, action) => {
         state.loading = false
         state.error = action.error.message || 'Something went wrong'
       })
