@@ -22,7 +22,7 @@ const CustomerCreate = () => {
   }
 
   const toggleToast = () => {
-    toast.success('Success Notification !', {
+    toast.success('Thêm Thành Công !', {
       position: toast.POSITION.TOP_RIGHT,
       autoClose: 2000,
       hideProgressBar: true

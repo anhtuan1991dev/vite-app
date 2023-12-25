@@ -30,6 +30,13 @@ export const fetchUpdateCustomer = createAsyncThunk('customer/update', async (da
   return response
 })
 
+export const fetchDeleteCustomer = createAsyncThunk('customer/delete', async (id: number, thunkAPI) => {
+  const response = await appSupabase.delete(`/customer?id=eq.${id}`, {
+    signal: thunkAPI.signal
+  })
+  return response
+})
+
 interface CustomersState {
   createCustomerDrawer: boolean
   updateCustomerDrawer: boolean
@@ -94,6 +101,15 @@ const customerSlice = createSlice({
         state.error = null
       })
       .addCase(fetchUpdateCustomer.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.error.message || 'Something went wrong'
+      })
+      // fetchDeleteCustomer
+      .addCase(fetchDeleteCustomer.fulfilled, (state) => {
+        state.loading = false
+        state.error = null
+      })
+      .addCase(fetchDeleteCustomer.rejected, (state, action) => {
         state.loading = false
         state.error = action.error.message || 'Something went wrong'
       })

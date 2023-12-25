@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import { Dropdown } from 'flowbite-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '~/redux/store'
-import { toggleEditTableDrawer } from '~/redux/slices/tableDrawerSlice'
+import { toggleEditTableDrawer, toggleDeleteTableDrawer } from '~/redux/slices/tableDrawerSlice'
 import { dataCustomer } from '~/redux/slices/customerSlice'
 import { CustomerType } from '~/pages/CustomerPage/CustomerType'
 import { IconEdit, IconTrash, IconEye } from '@tabler/icons-react'
@@ -17,6 +17,11 @@ const TableBodyAction = ({ data }: Props) => {
   const toggleDrawer = () => {
     dispatch(dataCustomer(data))
     dispatch(toggleEditTableDrawer(!showEditTableDrawer))
+  }
+
+  const toggleDelete = () => {
+    dispatch(dataCustomer(data))
+    dispatch(toggleDeleteTableDrawer(true))
   }
 
   const buttonClsx = clsx(
@@ -39,7 +44,9 @@ const TableBodyAction = ({ data }: Props) => {
         <Dropdown.Item icon={IconEdit} onClick={toggleDrawer}>
           Edit
         </Dropdown.Item>
-        <Dropdown.Item icon={IconTrash}>Delete</Dropdown.Item>
+        <Dropdown.Item icon={IconTrash} onClick={toggleDelete}>
+          Delete
+        </Dropdown.Item>
       </Dropdown>
     </td>
   )

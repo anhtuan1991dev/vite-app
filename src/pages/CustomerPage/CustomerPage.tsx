@@ -3,6 +3,7 @@ import { TableSearch } from '~/components/Table'
 import Row from '~/components/Row'
 import CustomerCreate from './CustomerCreate'
 import CustomerEdit from './CustomerEdit'
+import CustomerDelete from './CustomerDelete'
 import {
   Tables,
   TableHeader,
@@ -17,6 +18,7 @@ import { useSelector } from 'react-redux'
 import { fetchAll } from '~/redux/slices/customerSlice'
 import CustomerSkeleton from './CustomerSkeleton'
 import clsx from 'clsx'
+
 
 function CustomerPage() {
   const dispatch: AppDispatch = useAppDispatch()
@@ -82,6 +84,7 @@ function CustomerPage() {
               </TableBody>
             </Tables>
             <CustomerEdit />
+            <CustomerDelete/>
           </div>
         </>
       )}

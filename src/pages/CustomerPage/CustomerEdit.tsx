@@ -53,7 +53,7 @@ const CustomerEdit = () => {
   }, [customer])
 
   const toggleToast = () => {
-    toast.success('Success Notification !', {
+    toast.success('Edit Thành Công !', {
       position: toast.POSITION.TOP_RIGHT,
       autoClose: 2000,
       hideProgressBar: true
