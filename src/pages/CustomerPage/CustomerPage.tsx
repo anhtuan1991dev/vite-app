@@ -1,9 +1,11 @@
 import { useEffect } from 'react'
-import { TableSearch } from '~/components/Table'
 import Row from '~/components/Row'
 import CustomerCreate from './CustomerCreate'
 import CustomerEdit from './CustomerEdit'
 import CustomerDelete from './CustomerDelete'
+import CustomerExport from './CustomerExport'
+import CustomerSearch from './CustomerSearch'
+import CustomerSkeleton from './CustomerSkeleton'
 import {
   Tables,
   TableHeader,
@@ -16,9 +18,7 @@ import {
 import { AppDispatch, RootState, useAppDispatch } from '~/redux/store'
 import { useSelector } from 'react-redux'
 import { fetchAll } from '~/redux/slices/customerSlice'
-import CustomerSkeleton from './CustomerSkeleton'
 import clsx from 'clsx'
-import CustomerExport from './CustomerExport'
 
 function CustomerPage() {
   const dispatch: AppDispatch = useAppDispatch()
@@ -46,7 +46,7 @@ function CustomerPage() {
 
           <div className='basis-full p-5 bg-white border border-gray-300'>
             <div className='flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 pb-4'>
-              <TableSearch />
+              <CustomerSearch />
               <div
                 className={clsx(
                   'w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center',

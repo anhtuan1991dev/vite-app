@@ -2,10 +2,21 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { CustomerType } from '~/pages/CustomerPage/CustomerType'
 import customerService from '~/services/customerService'
 import appSupabase from '~/supabase/appSupabase'
+import { supabase } from '~/supabase/supabase'
 
 export const fetchAll = createAsyncThunk('customer/fetch-all', async () => {
   const response = await customerService.getAll()
   return (response.data as CustomerType[]).sort((a, b) => a.id - b.id)
+})
+
+export const fetchFiltering = createAsyncThunk('customer/filtering', async (value: string | undefined) => {
+  const filter = `name.like.%${value}%,email.like.%${value}%,phone.like.%${value}%,country.like.%${value}%,address.like.%${value}%`
+  const response = await supabase.from('customer').select('*').or(filter)
+  if (response.data !== null) return (response.data as CustomerType[]).sort((a, b) => a.id - b.id)
+  else {
+    const response = await customerService.getAll()
+    return (response.data as CustomerType[]).sort((a, b) => a.id - b.id)
+  }
 })
 
 export const fetchCreateCustomer = createAsyncThunk('customer/create', async (data: CustomerType, thunkAPI) => {
@@ -110,6 +121,16 @@ const customerSlice = createSlice({
         state.error = null
       })
       .addCase(fetchDeleteCustomer.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.error.message || 'Something went wrong'
+      })
+      // fetchFiltering
+      .addCase(fetchFiltering.fulfilled, (state, action: PayloadAction<CustomerType[]>) => {
+        state.loading = false
+        state.error = null
+        state.entities = action.payload
+      })
+      .addCase(fetchFiltering.rejected, (state, action) => {
         state.loading = false
         state.error = action.error.message || 'Something went wrong'
       })
