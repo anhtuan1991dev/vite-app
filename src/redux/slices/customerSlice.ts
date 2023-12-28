@@ -1,22 +1,47 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { CustomerType } from '~/pages/CustomerPage/CustomerType'
-import customerService from '~/services/customerService'
 import appSupabase from '~/supabase/appSupabase'
 import { supabase } from '~/supabase/supabase'
 
-export const fetchAll = createAsyncThunk('customer/fetch-all', async () => {
-  const response = await customerService.getAll()
-  return (response.data as CustomerType[]).sort((a, b) => a.id - b.id)
-})
+type PropsAllCustomer = {
+  pageSize: number
+  pageNumber: number
+  valueFilter?: string | undefined
+}
 
-export const fetchFiltering = createAsyncThunk('customer/filtering', async (value: string | undefined) => {
-  const filter = `name.like.%${value}%,email.like.%${value}%,phone.like.%${value}%,country.like.%${value}%,address.like.%${value}%`
-  const response = await supabase.from('customer').select('*').or(filter)
-  if (response.data !== null) return (response.data as CustomerType[]).sort((a, b) => a.id - b.id)
-  else {
-    const response = await customerService.getAll()
-    return (response.data as CustomerType[]).sort((a, b) => a.id - b.id)
+export const fetchAllCustomer = createAsyncThunk(
+  'customer/fetch-all-customer',
+  async ({ pageSize, pageNumber, valueFilter }: PropsAllCustomer) => {
+    const baseCustomer = supabase
+      .from('customer')
+      .select('*')
+      .order('id', { ascending: true })
+      .range(pageSize * (pageNumber - 1), pageSize - 1)
+
+    async function getAll() {
+      const response = await baseCustomer
+      return (response.data as CustomerType[]).sort((a, b) => a.id - b.id)
+    }
+
+    async function getAllFilter() {
+      const filter = `name.like.%${valueFilter}%,email.like.%${valueFilter}%,phone.like.%${valueFilter}%,country.like.%${valueFilter}%,address.like.%${valueFilter}%`
+      const resFilter = await baseCustomer.or(filter)
+      if (resFilter.data !== null) return (resFilter.data as CustomerType[]).sort((a, b) => a.id - b.id)
+      else return await getAll()
+    }
+
+    if (valueFilter === '' || valueFilter === undefined) {
+      return await getAll()
+    } else {
+      return await getAllFilter()
+    }
   }
+)
+
+export const fetchCountCustomer = createAsyncThunk('customer/fetch-count-customer', async () => {
+  const response = await supabase.from('customer').select('*', { count: 'exact', head: true })
+  if (response.count === null) return 0
+  else return response.count
 })
 
 export const fetchCreateCustomer = createAsyncThunk('customer/create', async (data: CustomerType, thunkAPI) => {
@@ -56,6 +81,7 @@ interface CustomersState {
   loading: boolean
   error: string | null
   status: number
+  countData: number
 }
 
 const initialState: CustomersState = {
@@ -65,7 +91,8 @@ const initialState: CustomersState = {
   customer: { id: 0, name: '', email: '', phone: '', address: '', country: '' },
   loading: false,
   error: null,
-  status: 0
+  status: 0,
+  countData: 0
 }
 
 const customerSlice = createSlice({
@@ -84,16 +111,12 @@ const customerSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // fetchAll
-      .addCase(fetchAll.pending, (state) => {
-        state.loading = true
-        state.error = null
-      })
-      .addCase(fetchAll.fulfilled, (state, action: PayloadAction<CustomerType[]>) => {
+      // fetchAllCustomer
+      .addCase(fetchAllCustomer.fulfilled, (state, action: PayloadAction<CustomerType[]>) => {
         state.loading = false
         state.entities = action.payload
       })
-      .addCase(fetchAll.rejected, (state, action) => {
+      .addCase(fetchAllCustomer.rejected, (state, action) => {
         state.loading = false
         state.error = action.error.message || 'Something went wrong'
       })
@@ -124,13 +147,13 @@ const customerSlice = createSlice({
         state.loading = false
         state.error = action.error.message || 'Something went wrong'
       })
-      // fetchFiltering
-      .addCase(fetchFiltering.fulfilled, (state, action: PayloadAction<CustomerType[]>) => {
+      // fetchCountCustomer
+      .addCase(fetchCountCustomer.fulfilled, (state, action) => {
         state.loading = false
         state.error = null
-        state.entities = action.payload
+        state.countData = action.payload
       })
-      .addCase(fetchFiltering.rejected, (state, action) => {
+      .addCase(fetchCountCustomer.rejected, (state, action) => {
         state.loading = false
         state.error = action.error.message || 'Something went wrong'
       })
@@ -139,3 +162,6 @@ const customerSlice = createSlice({
 
 export const { dataCustomer } = customerSlice.actions
 export default customerSlice.reducer
+function dispatch(arg0: any) {
+  throw new Error('Function not implemented.')
+}

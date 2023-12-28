@@ -1,14 +1,18 @@
 import { useRef, KeyboardEvent } from 'react'
-import { fetchFiltering } from '~/redux/slices/customerSlice'
-import { AppDispatch, useAppDispatch } from '~/redux/store'
+import { useSelector } from 'react-redux'
+import { fetchAllCustomer } from '~/redux/slices/customerSlice'
+import { AppDispatch, RootState, useAppDispatch } from '~/redux/store'
 
 const CustomerSearch = () => {
   const dispatch: AppDispatch = useAppDispatch()
+  const pageSize = useSelector((state: RootState) => state.tableDrawer.pageSize)
+  const pageNumber = useSelector((state: RootState) => state.tableDrawer.pageNumber)
+
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleKeyDown = (e: KeyboardEvent): void => {
     if (e.code === 'Enter') {
-      dispatch(fetchFiltering(inputRef.current?.value))
+      dispatch(fetchAllCustomer({ pageSize, pageNumber, valueFilter: inputRef.current?.value }))
     }
   }
 

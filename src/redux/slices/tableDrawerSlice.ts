@@ -8,6 +8,9 @@ interface TableDrawerState {
   showDeleteTableDrawer: boolean
   dataTable: any
   searchTable: string | undefined
+  pageSize: number
+  pageNumber: number
+  pageTotal: number
 }
 
 const initialState = {
@@ -16,7 +19,10 @@ const initialState = {
   showEditTableDrawer: false,
   showDeleteTableDrawer: false,
   dataTable: {},
-  searchTable: ''
+  searchTable: '',
+  pageSize: 10,
+  pageNumber: 1,
+  pageTotal: 1
 } as TableDrawerState
 
 const tableDrawerSlice = createSlice({
@@ -28,6 +34,15 @@ const tableDrawerSlice = createSlice({
     },
     setSearchTable: (state, action: PayloadAction<string | undefined>) => {
       state.searchTable = action.payload
+    },
+    setPageSize: (state, action: PayloadAction<number>) => {
+      state.pageSize = action.payload
+    },
+    setPageNumber: (state, action: PayloadAction<number>) => {
+      state.pageNumber = action.payload
+    },
+    setPageTotal: (state, action: PayloadAction<number>) => {
+      state.pageTotal = action.payload
     },
     toggleTableDrawer(state, action: PayloadAction<boolean>) {
       state.showTableDrawer = action.payload
@@ -50,6 +65,9 @@ export const {
   toggleAddTableDrawer,
   toggleEditTableDrawer,
   toggleDeleteTableDrawer,
-  setSearchTable
+  setSearchTable,
+  setPageSize,
+  setPageNumber,
+  setPageTotal
 } = tableDrawerSlice.actions
 export default tableDrawerSlice.reducer

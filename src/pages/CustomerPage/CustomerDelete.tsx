@@ -2,7 +2,7 @@ import { Button, Modal } from 'flowbite-react'
 import { HiTrash } from 'react-icons/hi'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import { fetchAll, fetchDeleteCustomer } from '~/redux/slices/customerSlice'
+import { fetchAllCustomer, fetchDeleteCustomer } from '~/redux/slices/customerSlice'
 import { toggleDeleteTableDrawer } from '~/redux/slices/tableDrawerSlice'
 import { RootState, useAppDispatch } from '~/redux/store'
 import { CustomerType } from './CustomerType'
@@ -10,6 +10,8 @@ import { CustomerType } from './CustomerType'
 export default function CustomerDelete() {
   const dispatch = useAppDispatch()
   const { showDeleteTableDrawer, dataTable } = useSelector((state: RootState) => state.tableDrawer)
+  const pageSize = useSelector((state: RootState) => state.tableDrawer.pageSize)
+  const pageNumber = useSelector((state: RootState) => state.tableDrawer.pageNumber)
   const customer = dataTable as CustomerType
 
   const handleClose = () => {
@@ -29,7 +31,7 @@ export default function CustomerDelete() {
       .unwrap()
       .then((res) => {
         if (res.status === 204) {
-          dispatch(fetchAll())
+          dispatch(fetchAllCustomer({ pageSize, pageNumber }))
             .unwrap()
             .then(() => {
               dispatch(toggleDeleteTableDrawer(false))

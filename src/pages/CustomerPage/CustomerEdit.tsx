@@ -6,7 +6,7 @@ import { RootState, useAppDispatch } from '~/redux/store'
 import { toggleEditTableDrawer } from '~/redux/slices/tableDrawerSlice'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { fetchAll, fetchUpdateCustomer } from '~/redux/slices/customerSlice'
+import { fetchAllCustomer, fetchUpdateCustomer } from '~/redux/slices/customerSlice'
 import { toast } from 'react-toastify'
 import ErrorText from '~/components/ErrorText'
 import * as yup from 'yup'
@@ -17,6 +17,8 @@ import { CustomerType } from './CustomerType'
 const CustomerEdit = () => {
   const dispatch = useAppDispatch()
   const { showEditTableDrawer, dataTable } = useSelector((state: RootState) => state.tableDrawer)
+  const pageSize = useSelector((state: RootState) => state.tableDrawer.pageSize)
+  const pageNumber = useSelector((state: RootState) => state.tableDrawer.pageNumber)
   const customer = dataTable as CustomerType
   
   const toggleDrawer = () => {
@@ -67,7 +69,7 @@ const CustomerEdit = () => {
       .then((res) => {
         if (res.status === 204) {
           dispatch(toggleEditTableDrawer(!showEditTableDrawer))
-          dispatch(fetchAll())
+          dispatch(fetchAllCustomer({ pageSize, pageNumber }))
             .unwrap()
             .then(() => {
               toggleToast()

@@ -5,7 +5,7 @@ import { RootState, useAppDispatch } from '~/redux/store'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { toggleAddTableDrawer } from '~/redux/slices/tableDrawerSlice'
 import { useForm } from 'react-hook-form'
-import { fetchCreateCustomer, fetchAll } from '~/redux/slices/customerSlice'
+import { fetchCreateCustomer, fetchAllCustomer } from '~/redux/slices/customerSlice'
 import { AxiosResponse } from 'axios'
 import { ToastContainer, toast } from 'react-toastify'
 import ErrorText from '~/components/ErrorText'
@@ -16,6 +16,8 @@ import clsx from 'clsx'
 const CustomerCreate = () => {
   const dispatch = useAppDispatch()
   const { showAddTableDrawer } = useSelector((state: RootState) => state.tableDrawer)
+  const pageSize = useSelector((state: RootState) => state.tableDrawer.pageSize)
+  const pageNumber = useSelector((state: RootState) => state.tableDrawer.pageNumber)
 
   const toggleDrawer = () => {
     dispatch(toggleAddTableDrawer(!showAddTableDrawer))
@@ -61,7 +63,7 @@ const CustomerCreate = () => {
       .then((res) => {
         if ((res.payload as AxiosResponse).status === 201) {
           dispatch(toggleAddTableDrawer(!showAddTableDrawer))
-          dispatch(fetchAll())
+          dispatch(fetchAllCustomer({ pageSize, pageNumber }))
             .unwrap()
             .then(() => {
               reset()
