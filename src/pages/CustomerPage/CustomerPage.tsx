@@ -4,7 +4,6 @@ import CustomerEdit from './CustomerEdit'
 import CustomerDelete from './CustomerDelete'
 import CustomerExport from './CustomerExport'
 import CustomerSearch from './CustomerSearch'
-import CustomerSkeleton from './CustomerSkeleton'
 import clsx from 'clsx'
 import {
   Tables,
