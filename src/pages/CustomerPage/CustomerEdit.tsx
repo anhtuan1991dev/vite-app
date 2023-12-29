@@ -16,11 +16,9 @@ import { CustomerType } from './CustomerType'
 
 const CustomerEdit = () => {
   const dispatch = useAppDispatch()
-  const { showEditTableDrawer, dataTable } = useSelector((state: RootState) => state.tableDrawer)
-  const pageSize = useSelector((state: RootState) => state.tableDrawer.pageSize)
-  const pageNumber = useSelector((state: RootState) => state.tableDrawer.pageNumber)
+  const { showEditTableDrawer, dataTable, pageSize, pageNumber } = useSelector((state: RootState) => state.tableDrawer)
   const customer = dataTable as CustomerType
-  
+
   const toggleDrawer = () => {
     dispatch(toggleEditTableDrawer(!showEditTableDrawer))
   }
@@ -69,7 +67,7 @@ const CustomerEdit = () => {
       .then((res) => {
         if (res.status === 204) {
           dispatch(toggleEditTableDrawer(!showEditTableDrawer))
-          dispatch(fetchAllCustomer({ pageSize, pageNumber }))
+          dispatch(fetchAllCustomer({ pageSize: pageSize, pageNumber: pageNumber }))
             .unwrap()
             .then(() => {
               toggleToast()

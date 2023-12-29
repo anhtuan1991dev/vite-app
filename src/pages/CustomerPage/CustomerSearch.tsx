@@ -5,14 +5,13 @@ import { AppDispatch, RootState, useAppDispatch } from '~/redux/store'
 
 const CustomerSearch = () => {
   const dispatch: AppDispatch = useAppDispatch()
-  const pageSize = useSelector((state: RootState) => state.tableDrawer.pageSize)
-  const pageNumber = useSelector((state: RootState) => state.tableDrawer.pageNumber)
+  const { pageSize, pageNumber } = useSelector((state: RootState) => state.tableDrawer)
 
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleKeyDown = (e: KeyboardEvent): void => {
     if (e.code === 'Enter') {
-      dispatch(fetchAllCustomer({ pageSize, pageNumber, valueFilter: inputRef.current?.value }))
+      dispatch(fetchAllCustomer({ pageSize: pageSize, pageNumber: pageNumber, valueFilter: inputRef.current?.value }))
     }
   }
 

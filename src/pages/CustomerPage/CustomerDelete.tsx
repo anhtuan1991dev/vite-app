@@ -2,16 +2,14 @@ import { Button, Modal } from 'flowbite-react'
 import { HiTrash } from 'react-icons/hi'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import { fetchAllCustomer, fetchDeleteCustomer } from '~/redux/slices/customerSlice'
-import { toggleDeleteTableDrawer } from '~/redux/slices/tableDrawerSlice'
+import { fetchAllCustomer, fetchCountCustomer, fetchDeleteCustomer } from '~/redux/slices/customerSlice'
+import { setPageNumber, toggleDeleteTableDrawer } from '~/redux/slices/tableDrawerSlice'
 import { RootState, useAppDispatch } from '~/redux/store'
 import { CustomerType } from './CustomerType'
 
 export default function CustomerDelete() {
   const dispatch = useAppDispatch()
-  const { showDeleteTableDrawer, dataTable } = useSelector((state: RootState) => state.tableDrawer)
-  const pageSize = useSelector((state: RootState) => state.tableDrawer.pageSize)
-  const pageNumber = useSelector((state: RootState) => state.tableDrawer.pageNumber)
+  const { showDeleteTableDrawer, dataTable, pageSize } = useSelector((state: RootState) => state.tableDrawer)
   const customer = dataTable as CustomerType
 
   const handleClose = () => {
@@ -31,9 +29,11 @@ export default function CustomerDelete() {
       .unwrap()
       .then((res) => {
         if (res.status === 204) {
-          dispatch(fetchAllCustomer({ pageSize, pageNumber }))
+          dispatch(fetchAllCustomer({ pageSize: pageSize, pageNumber: 1 }))
             .unwrap()
             .then(() => {
+              dispatch(fetchCountCustomer({ pageSize: pageSize }))
+              dispatch(setPageNumber(1))
               dispatch(toggleDeleteTableDrawer(false))
               toggleToast()
             })

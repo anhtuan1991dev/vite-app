@@ -1,10 +1,10 @@
 import clsx from 'clsx'
-import { FC } from 'react'
+import React, { FC } from 'react'
 import { useSelector } from 'react-redux'
 import { setPageSize, setPageNumber } from '~/redux/slices/tableDrawerSlice'
 import { AppDispatch, RootState, useAppDispatch } from '~/redux/store'
 import { TableButtonArrow } from './TableButtonArrow'
-import { fetchCountCustomer } from '~/redux/slices/customerSlice'
+import { fetchAllCustomer } from '~/redux/slices/customerSlice'
 
 interface TableFooterProps {
   onChangePageSize: (pageSize: number, pageNumber: number) => void
@@ -13,12 +13,53 @@ interface TableFooterProps {
 const TableFooter: FC<TableFooterProps> = ({ onChangePageSize }) => {
   const dispatch: AppDispatch = useAppDispatch()
   const { pageSize, pageNumber, pageTotal } = useSelector((state: RootState) => state.tableDrawer)
-  
+
   const handlePageSize = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     const pageSizeValue: string = e.target.value
     const parsedPageSize: number = Number(pageSizeValue)
     dispatch(setPageSize(parsedPageSize))
-    onChangePageSize(parsedPageSize, pageNumber)
+    dispatch(setPageNumber(1))
+    onChangePageSize(parsedPageSize, 1)
+  }
+
+  const handlePageFirst = () => {
+    if (pageNumber !== 1) {
+      const page = 1
+      dispatch(setPageNumber(page))
+      dispatch(fetchAllCustomer({ pageSize: pageSize, pageNumber: page }))
+    }
+  }
+
+  const handlePagePrevious = () => {
+    if (pageNumber > 1) {
+      const page = pageNumber - 1
+      dispatch(setPageNumber(page))
+      dispatch(fetchAllCustomer({ pageSize: pageSize, pageNumber: page }))
+    }
+  }
+
+  const handlePageNext = () => {
+    if (pageNumber < pageTotal) {
+      const page = pageNumber + 1
+      dispatch(setPageNumber(page))
+      dispatch(fetchAllCustomer({ pageSize: pageSize, pageNumber: page }))
+    }
+  }
+
+  const handlePageLast = () => {
+    if (pageNumber !== pageTotal) {
+      const page = pageTotal
+      dispatch(setPageNumber(page))
+      dispatch(fetchAllCustomer({ pageSize: pageSize, pageNumber: page }))
+    }
+  }
+
+  const handleGotoPage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const page = e.target.value ? Number(e.target.value) : 1
+    if (page >= 1 && page <= pageTotal) {
+      dispatch(setPageNumber(page))
+      dispatch(fetchAllCustomer({ pageSize: pageSize, pageNumber: page }))
+    }
   }
 
   return (
@@ -54,35 +95,28 @@ const TableFooter: FC<TableFooterProps> = ({ onChangePageSize }) => {
         </span>
       </div>
       <div className='flex items-center gap-2'>
-        {/* <span className='flex items-center gap-2'>
+        <span className='flex items-center gap-2'>
           <label className='block text-sm fl font-medium text-gray-700 dark:text-white'>Go to page</label>
           <input
             type='number'
-            defaultValue={table.getState().pagination.pageIndex + 1}
-            onChange={(e) => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0
-              table.setPageIndex(page)
-            }}
+            defaultValue={1}
+            min={1} max={pageTotal}
+            onChange={handleGotoPage}
             className='bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-16 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
           />
-        </span> */}
+        </span>
         <ul className='inline-flex items-stretch -space-x-px'>
           <li>
-            <TableButtonArrow page={2} />
+            <TableButtonArrow page={2} onClick={handlePageFirst} />
           </li>
           <li>
-            <TableButtonArrow
-              page={0}
-              onClick={() => {
-                if (pageNumber > 1) dispatch(setPageNumber(pageNumber - 1))
-              }}
-            />
+            <TableButtonArrow page={0} onClick={handlePagePrevious} />
           </li>
           <li>
-            <TableButtonArrow page={1} onClick={() => dispatch(setPageNumber(pageNumber + 1))} />
+            <TableButtonArrow page={1} onClick={handlePageNext} />
           </li>
           <li>
-            <TableButtonArrow page={3} />
+            <TableButtonArrow page={3} onClick={handlePageLast} />
           </li>
         </ul>
       </div>

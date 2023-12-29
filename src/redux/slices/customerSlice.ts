@@ -16,7 +16,7 @@ export const fetchAllCustomer = createAsyncThunk(
       .from('customer')
       .select('*')
       .order('id', { ascending: true })
-      .range(pageSize * (pageNumber - 1), pageSize - 1)
+      .range(pageSize * (pageNumber - 1), pageNumber * pageSize - 1)
 
     async function getAll() {
       const response = await baseCustomer
@@ -38,11 +38,21 @@ export const fetchAllCustomer = createAsyncThunk(
   }
 )
 
-export const fetchCountCustomer = createAsyncThunk('customer/fetch-count-customer', async () => {
-  const response = await supabase.from('customer').select('*', { count: 'exact', head: true })
-  if (response.count === null) return 0
-  else return response.count
-})
+type PropsCountCustomer = {
+  pageSize: number
+}
+
+export const fetchCountCustomer = createAsyncThunk(
+  'customer/fetch-count-customer',
+  async ({ pageSize }: PropsCountCustomer) => {
+    const response = await supabase.from('customer').select('*', { count: 'exact', head: true })
+    if (response.count === null) {
+      return 1
+    } else {
+      return Math.ceil(response.count / pageSize)
+    }
+  }
+)
 
 export const fetchCreateCustomer = createAsyncThunk('customer/create', async (data: CustomerType, thunkAPI) => {
   const response = await appSupabase.post('/customer', data, {
@@ -81,7 +91,7 @@ interface CustomersState {
   loading: boolean
   error: string | null
   status: number
-  countData: number
+  countData: number | null
 }
 
 const initialState: CustomersState = {
@@ -162,6 +172,3 @@ const customerSlice = createSlice({
 
 export const { dataCustomer } = customerSlice.actions
 export default customerSlice.reducer
-function dispatch(arg0: any) {
-  throw new Error('Function not implemented.')
-}

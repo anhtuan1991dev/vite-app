@@ -28,13 +28,15 @@ function CustomerPage() {
   const { pageSize, pageNumber } = useSelector((state: RootState) => state.tableDrawer)
 
   useEffect(() => {
-    dispatch(fetchAllCustomer({ pageSize, pageNumber }))
-    dispatch(fetchCountCustomer())
+    dispatch(fetchAllCustomer({ pageSize: pageSize, pageNumber: pageNumber }))
+    dispatch(fetchCountCustomer({ pageSize: pageSize }))
   }, [dispatch])
 
-  // if (countData > 0) {
-  //   dispatch(setPageTotal(countData))
-  // }
+  useEffect(() => {
+    if (countData) {
+      dispatch(setPageTotal(countData))
+    }
+  }, [countData, dispatch])
 
   if (error) {
     return <div>Error: {error}</div>
@@ -91,6 +93,7 @@ function CustomerPage() {
         <TableFooter
           onChangePageSize={(pageSize, pageNumber) => {
             dispatch(fetchAllCustomer({ pageSize, pageNumber }))
+            dispatch(fetchCountCustomer({ pageSize }))
           }}
         />
         <CustomerEdit />
